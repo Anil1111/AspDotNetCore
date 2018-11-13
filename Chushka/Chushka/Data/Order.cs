@@ -6,7 +6,8 @@ namespace Chushka.Data
 {
     public class Order
     {
-        [Key, Required]
+        [Key]
+        [Required]
         public int Id { get; set; }
 
         [Required]

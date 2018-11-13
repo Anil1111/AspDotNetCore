@@ -13,7 +13,8 @@ namespace Chushka.Data
 
     public class Product
     {
-        [Key, Required]
+        [Key]
+        [Required]
         public int Id { get; set; }
 
         [Required]

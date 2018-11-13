@@ -10,7 +10,8 @@ namespace Chushka.Data
 
     public class User
     {
-        [Key, Required]
+        [Key]
+        [Required]
         public string Username { get; set; }
 
         [Required]
@@ -23,7 +24,7 @@ namespace Chushka.Data
         public string FullName { get; set; }
 
         [Required]
-        [EmailAddress]
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
     }
 }
