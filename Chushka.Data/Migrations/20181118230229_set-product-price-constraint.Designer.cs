@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chushka.Data.Migrations
 {
     [DbContext(typeof(ChushkaDbContext))]
-    [Migration("20181117015919_update-models")]
-    partial class updatemodels
+    [Migration("20181118230229_set-product-price-constraint")]
+    partial class setproductpriceconstraint
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

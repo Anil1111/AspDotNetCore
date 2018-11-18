@@ -9,10 +9,6 @@ namespace CHUSHKA.Web.Controllers
     {
         public IActionResult Index()
         {
-            if (this.User.IsInRole("Administrator"))
-            {
-                return View("AdministrotorIndex");
-            }
             return View();
         }
 

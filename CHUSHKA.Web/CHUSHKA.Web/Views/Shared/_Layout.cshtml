@@ -32,7 +32,7 @@
                                 <a class="nav-link nav-link-white" asp-controller="Product" asp-action="Create">Create Product</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link nav-link-white" href="/orders/all">All Orders</a>
+                                <a class="nav-link nav-link-white" asp-controller="Order" asp-action="All">All Orders</a>
                             </li>
                         }
                         @if (!User.Identity.IsAuthenticated)

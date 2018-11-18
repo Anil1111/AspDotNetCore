@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chushka.Data.Migrations
 {
     [DbContext(typeof(ChushkaDbContext))]
-    [Migration("20181116210511_initial")]
+    [Migration("20181118155156_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

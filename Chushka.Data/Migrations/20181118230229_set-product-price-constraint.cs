@@ -2,7 +2,7 @@
 
 namespace Chushka.Data.Migrations
 {
-    public partial class updatemodels : Migration
+    public partial class setproductpriceconstraint : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

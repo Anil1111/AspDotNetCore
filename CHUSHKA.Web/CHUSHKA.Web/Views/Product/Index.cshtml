@@ -17,11 +17,14 @@
     {
 
         <div class="row d-flex justify-content-around">
-            <a href="/bullshit" class="col-md-2">
+            <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="col-md-2">
                 <div class="product p-1 chushka-bg-color rounded-top rounded-bottom">
                     <h5 class="text-center mt-3">@product.Name</h5>
                     <hr class="hr-1 bg-white" />
                     <p class="text-white text-center">
+                        @if(product.Description.Length > 50){
+                            product.Description = product.Description.Substring(0, 50) + "...";
+                        }
                         @product.Description
                     </p>
                     <hr class="hr-1 bg-white" />

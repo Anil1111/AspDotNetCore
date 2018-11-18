@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CHUSHKA.Data;
 using Chushka.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CHUSHKA.Web.Controllers
 {
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly ChushkaDbContext _context;
@@ -44,16 +46,18 @@ namespace CHUSHKA.Web.Controllers
         }
 
         // GET: Product/Create
+        [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Product/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,Type")] Product product)
         {
             if (ModelState.IsValid)
@@ -66,6 +70,7 @@ namespace CHUSHKA.Web.Controllers
         }
 
         // GET: Product/Edit/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -82,10 +87,11 @@ namespace CHUSHKA.Web.Controllers
         }
 
         // POST: Product/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,Type")] Product product)
         {
             if (id != product.Id)
@@ -117,6 +123,7 @@ namespace CHUSHKA.Web.Controllers
         }
 
         // GET: Product/Delete/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -137,6 +144,7 @@ namespace CHUSHKA.Web.Controllers
         // POST: Product/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _context.Products.FindAsync(id);

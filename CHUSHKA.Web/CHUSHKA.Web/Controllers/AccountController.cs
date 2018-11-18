@@ -26,14 +26,16 @@ namespace CHUSHKA.Web.Controllers
         public IActionResult Login(LoginViewModel viewModel)
         {
             var result = this.signInManager
-                .PasswordSignInAsync(viewModel.Username, viewModel.Password, false, false).Result;
+                .PasswordSignInAsync(viewModel.Username, viewModel.Password, false, false)
+                .Result;
 
             if (result.Succeeded)
             {
-                return this.RedirectToAction("Index", "Home");
+                return this.RedirectToAction("Index", "Product");
             }
 
-            return this.View();
+            ModelState.AddModelError("", "Invalid login attempt");
+            return this.View(viewModel);
         }
 
         public IActionResult Register() => View();
@@ -48,20 +50,32 @@ namespace CHUSHKA.Web.Controllers
                 FullName = viewModel.FullName,
             };
 
-            if (userManager.CreateAsync(user, viewModel.Password).Result.Succeeded)
+            var createUserResult = userManager.CreateAsync(user, viewModel.Password).Result;
+            if (createUserResult.Succeeded)
             {
-                if (userManager.Users.Count() != 1)
+                if (userManager.Users.Count() == 1)
                 {
-                    return this.RedirectToAction("Index", "Home");
+                    var adminUserResult = userManager
+                        .AddToRoleAsync(user, "Administrator")
+                        .Result;
+                    if (!adminUserResult.Errors.Any())
+                    {
+                        ModelState.AddModelError("", "Invalid login attempt");
+                        return this.View(viewModel);
+                    }
                 }
 
-                IdentityResult result = userManager.AddToRoleAsync(user, "Administrator").Result;
-                if (!result.Errors.Any())
-                {
-                    return this.RedirectToAction("Index", "Home");
-                }
+                return this.RedirectToAction("Index", "Product");
             }
-            return this.View();
+
+            ModelState.AddModelError("", "Invalid login attempt");
+            return this.View(viewModel);
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await this.signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
     }
 }
