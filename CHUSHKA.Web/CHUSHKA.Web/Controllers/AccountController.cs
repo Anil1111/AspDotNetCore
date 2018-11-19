@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CHUSHKA.Web.ViewModels;
 using Chuska.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,71 +12,104 @@ namespace CHUSHKA.Web.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<ChushkaUser> userManager;
-        private readonly SignInManager<ChushkaUser> signInManager;
+        private readonly UserManager<ChushkaUser> _userManager;
+        private readonly SignInManager<ChushkaUser> _signInManager;
 
         public AccountController(SignInManager<ChushkaUser> signInManager, UserManager<ChushkaUser> userManager)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
+            this._userManager = userManager;
+            this._signInManager = signInManager;
         }
 
         public IActionResult Login() => View();
 
         [HttpPost]
-        public IActionResult Login(LoginViewModel viewModel)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
-            var result = this.signInManager
-                .PasswordSignInAsync(viewModel.Username, viewModel.Password, false, false)
-                .Result;
-
-            if (result.Succeeded)
+            if (ModelState.IsValid)
             {
-                return this.RedirectToAction("Index", "Product");
+                var result = await _signInManager
+                    .PasswordSignInAsync(model.Username, model.Password, true, false);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Product");
+                }
             }
 
             ModelState.AddModelError("", "Invalid login attempt");
-            return this.View(viewModel);
+            return View(model);
         }
 
         public IActionResult Register() => View();
 
         [HttpPost]
-        public IActionResult Register(RegisterViewModel viewModel)
+        public async Task<IActionResult> Register(RegisterViewModel viewModel)
         {
-            var user = new ChushkaUser()
+            if (ModelState.IsValid)
             {
-                Email = viewModel.Email,
-                UserName = viewModel.Username,
-                FullName = viewModel.FullName,
-            };
-
-            var createUserResult = userManager.CreateAsync(user, viewModel.Password).Result;
-            if (createUserResult.Succeeded)
-            {
-                if (userManager.Users.Count() == 1)
+                var user = new ChushkaUser
                 {
-                    var adminUserResult = userManager
-                        .AddToRoleAsync(user, "Administrator")
-                        .Result;
-                    if (!adminUserResult.Errors.Any())
-                    {
-                        ModelState.AddModelError("", "Invalid login attempt");
-                        return this.View(viewModel);
-                    }
-                }
+                    UserName = viewModel.Username,
+                    Email = viewModel.Email,
+                    FullName = viewModel.FullName
+                };
 
-                return this.RedirectToAction("Index", "Product");
+                var result = await _userManager.CreateAsync(user, viewModel.Password);
+
+                if (result.Succeeded)
+                {
+                    string role = _userManager.Users.Count() == 1 ? "Administrator" : "User";
+
+                    var addRole = _userManager
+                        .AddToRoleAsync(user, role)
+                        .Result;
+
+                    if (addRole.Errors.Any())
+                    {
+                        ModelState.AddModelError("", "Invalid registration attempt");
+                        return this.View();
+                    }
+
+                    return View("Login");
+                }
             }
 
-            ModelState.AddModelError("", "Invalid login attempt");
-            return this.View(viewModel);
+            ModelState.AddModelError("", "Invalid registration attempt");
+            return View(viewModel);
         }
 
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
-            await this.signInManager.SignOutAsync();
+            await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        private async Task<IActionResult> AddChushkaUser(ChushkaUser user, string password)
+        {
+            var result = await _userManager.CreateAsync(user, password);
+
+            if (result.Succeeded)
+            {
+                string role = _userManager.Users.Count() == 1 ? "Admin" : "User";
+
+                var addRole = _userManager
+                    .AddToRoleAsync(user, role)
+                    .Result;
+
+                if (addRole.Errors.Any())
+                {
+                    ModelState.AddModelError("", "Invalid registration attempt");
+                    return this.View();
+                }
+
+                // All good proceed with login
+                return null;
+            }
+
+            ModelState.AddModelError("", "Invalid registration attempt");
+            return this.View();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Chushka.Models.Product>
+﻿@model IEnumerable<CHUSHKA.Web.ViewModels.ProductViewModel>
 
 <div class="container-fluid text-center">
     <h2>Greetings, @User.Identity.Name!</h2>
@@ -13,24 +13,36 @@
 </div>
 <hr class="hr-2 bg-dark" />
 <div class="container-fluid product-holder">
-    @foreach (var product in Model)
-    {
+   
+        @{ var count = 0;}
 
-        <div class="row d-flex justify-content-around">
-            <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="col-md-2">
+        @foreach (var product in Model){
+
+         <text>
+
+            @if (count == 0){
+                @:<div class="row d-flex justify-content-around mt-4">
+            }
+
+             <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="col-md-2">
                 <div class="product p-1 chushka-bg-color rounded-top rounded-bottom">
                     <h5 class="text-center mt-3">@product.Name</h5>
                     <hr class="hr-1 bg-white" />
                     <p class="text-white text-center">
-                        @if(product.Description.Length > 50){
-                            product.Description = product.Description.Substring(0, 50) + "...";
-                        }
-                        @product.Description
+                        @product.ShortDescription
                     </p>
                     <hr class="hr-1 bg-white" />
-                    <h6 class="text-center text-white mb-3">$@product.Price</h6>
+                    <h6 class="text-center text-white mb-3">@product.PriceString</h6>
                 </div>
-            </a>
-        </div>
-    }
-</div>
+             </a>
+
+            @{count++;}
+
+            @if (count == 5 || count == Model.Count()){
+                 @:</div>
+                 count = 0;
+             }
+
+        </text>
+        }
+    </div>

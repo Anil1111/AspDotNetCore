@@ -1,4 +1,4 @@
-﻿@model Chushka.Models.Product
+﻿@model CHUSHKA.Web.ViewModels.ProductViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -9,7 +9,7 @@
 <hr class="hr-2 bg-dark" />
 <div class="product-type-holder half-width mx-auto d-flex justify-content-between">
     <h3 class="text-center">Type: @Model.Type.ToString()</h3>
-    <h3 class="text-center">Price: $@Model.Price</h3>
+    <h3 class="text-center">Price: @Model.PriceString</h3>
 </div>
 <hr class="hr-2 bg-dark" />
 <h3 class="text-center">Description</h3>
@@ -21,8 +21,8 @@
 <hr class="hr-2 bg-dark" />
 <h3 class="text-center">Actions</h3>
 <div class="product-action-holder mt-4 half-width mx-auto d-flex justify-content-around">
-    <a class="btn chushka-bg-color" asp-controller="Order" asp-action="Index" asp-route-id="@Model.Id">Order</a>
-    @if (User.Identity.IsAuthenticated)
+    <a class="btn chushka-bg-color" asp-controller="Orders" asp-action="Create" asp-route-id="@Model.Id">Order</a>
+    @if (User.IsInRole("Administrator"))
     {
         <a class="btn chushka-bg-color" asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
         <a class="btn chushka-bg-color" asp-controller="Product" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>

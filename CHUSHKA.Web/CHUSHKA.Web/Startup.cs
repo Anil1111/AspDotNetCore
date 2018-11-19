@@ -99,6 +99,12 @@ namespace CHUSHKA.Web
             {
                 roleResult = await RoleManager.CreateAsync(new IdentityRole("Administrator"));
             }
+
+            roleExist = await RoleManager.RoleExistsAsync("User");
+            if (!roleExist)
+            {
+                roleResult = await RoleManager.CreateAsync(new IdentityRole("User"));
+            }
         }
     }
 }

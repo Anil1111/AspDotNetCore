@@ -1,27 +1,27 @@
 ﻿@model CHUSHKA.Web.ViewModels.ProductViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Delete";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h1 class="text-center">Edit Product</h1>
+<h1 class="text-center">Delete Product</h1>
 <hr class="hr-2 bg-dark" />
 
-<form class="mx-auto half-width" asp-action="Edit">
+<form class="mx-auto half-width" asp-action="Delete" asp-route-id="@Model.Id">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" placeholder="Name...">
+        <input asp-for="Name" class="form-control" placeholder="Name..." disabled>
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="Price"></label>
-        <input asp-for="Price" type="number" class="form-control"  min="0" step="1" value="@Model.Price.ToString("#")">
+        <input asp-for="Price" type="number" class="form-control" min="0" step="1" value="@Model.Price.ToString("#")" disabled>
         <span asp-validation-for="Price" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="Description"></label>
-        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Description..."></textarea>
+        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Description..." disabled></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
     <h4 class="text-center">Product Type</h4>
@@ -30,7 +30,7 @@
         @foreach (var productType in Enum.GetValues(typeof(Chushka.Models.ProductType)))
         {
             <div class="form-check form-check-inline">
-                <input asp-for="Type" class="form-check-input" type="radio" value="@productType">
+                <input asp-for="Type" class="form-check-input" type="radio" value="@productType" disabled>
                 <label class="form-check-label">@productType</label>
             </div>
 
@@ -39,8 +39,8 @@
     </div>
     <hr class="hr-2 bg-dark half-width mt-4" />
     <div class="button-holder mt-2 d-flex w-25 mx-auto justify-content-between">
-        <button type="submit" class="btn chushka-bg-color">Edit</button>
-        <button type="submit" class="btn chushka-bg-color" asp-action="Index">Cancel</button>
+        <button type="submit" class="btn chushka-bg-color">Delete</button>
+        <button type="submit" class="btn chushka-bg-color" asp-action="Details" asp-route-id="@Model.Id">Cancel</button>
     </div>
 </form>
 

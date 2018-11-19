@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CHUSHKA.Data;
 using Chushka.Models;
+using CHUSHKA.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 
 namespace CHUSHKA.Web.Controllers
@@ -24,11 +25,15 @@ namespace CHUSHKA.Web.Controllers
         // GET: Product
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Products.ToListAsync());
+            var allProducts = await _context.Products.ToListAsync();
+            var productsViewModel = new List<ProductViewModel>(allProducts.Count);
+            allProducts.ForEach(x => productsViewModel.Add(new ProductViewModel(x)));
+
+            return View(productsViewModel);
         }
 
         // GET: Product/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -42,7 +47,7 @@ namespace CHUSHKA.Web.Controllers
                 return NotFound();
             }
 
-            return View(product);
+            return View(new ProductViewModel(product));
         }
 
         // GET: Product/Create
@@ -66,12 +71,13 @@ namespace CHUSHKA.Web.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+
+            return View(new ProductViewModel(product));
         }
 
         // GET: Product/Edit/5
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
@@ -83,7 +89,8 @@ namespace CHUSHKA.Web.Controllers
             {
                 return NotFound();
             }
-            return View(product);
+
+            return View(new ProductViewModel(product));
         }
 
         // POST: Product/Edit/5
@@ -92,7 +99,7 @@ namespace CHUSHKA.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,Type")] Product product)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,Description,Price,Type")] Product product)
         {
             if (id != product.Id)
             {
@@ -119,12 +126,13 @@ namespace CHUSHKA.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+
+            return View(new ProductViewModel(product));
         }
 
         // GET: Product/Delete/5
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -138,22 +146,23 @@ namespace CHUSHKA.Web.Controllers
                 return NotFound();
             }
 
-            return View(product);
+            return View(new ProductViewModel(product));
         }
 
         // POST: Product/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var product = await _context.Products.FindAsync(id);
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction("Index", "Product");
         }
 
-        private bool ProductExists(int id)
+        private bool ProductExists(string id)
         {
             return _context.Products.Any(e => e.Id == id);
         }
