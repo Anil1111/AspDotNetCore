@@ -1,0 +1,39 @@
+﻿@model Eventures.Web.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-center">Login</h1>
+<hr class="chushka-bg-color half-width" />
+<form class="mx-auto half-width" method="post" asp-controller="Account" asp-action="Login">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="form-group">
+        <label asp-for="Username"></label>
+        <input asp-for="Username" class="form-control yellow" placeholder="Username...">
+        <span asp-validation-for="Username"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" class="form-control yellow" placeholder="Password...">
+        <span asp-validation-for="Username"></span>
+    </div>
+    <hr class="chushka-bg-color" />
+    <div class="checkbox-inline offset-5">
+        <input class="checkbox-inline" asp-for="RememberMe">
+        <label class="checkbox-inline" asp-for="RememberMe"></label>
+    </div>
+    <hr class="chushka-bg-color" />
+    <div class="button-holder d-flex justify-content-center">
+        <button type="submit" class="btn chushka-bg-color">Login</button>
+    </div>
+    <div class="text-center mt-3"><a class="nav-link-dark" href="javascript:void(0)">Forgot your password?</a></div>
+    <div class="text-center mt-2">
+        <a class="nav-link-dark" asp-action="Register">Register a new user</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

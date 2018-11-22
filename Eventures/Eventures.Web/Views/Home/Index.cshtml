@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="jumbotron mt-3 chushka-bg-color">
+        @if (User.Identity.IsAuthenticated)
+        {
+            @if (User.IsInRole("Admin"))
+            {
+                <h1 class="text-center">Greatings, Administrator - @User.Identity.Name!</h1>
+                <hr/>
+                <h3 class="text-center">Enjoy your work.</h3>
+            }
+            else
+            {
+                <h1 class="text-center">Welcome, @User.Identity.Name!</h1>
+                <hr />
+                <h3 class="text-center">Eventures wishes you an exciting expreience.</h3>
+            }
+        }
+        else
+        {
+            <h1>Eventures - The best ticket service in the world.</h1>
+            <hr />
+            <h3><a class="nav-link-dark" asp-controller="Account" asp-action="Login">Login</a> to start "eventing".</h3>
+            <h3><a class="nav-link-dark" asp-controller="Account" asp-action="Register">Register</a> if you don't have an account.</h3>
+        }
+    </div>
+
+@section Scripts
+    {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
